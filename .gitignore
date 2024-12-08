@@ -1,0 +1,3 @@
+*.gif
+src/__pycache__
+.venv
