@@ -33,9 +33,8 @@ class ThreeBodyPlotter:
     plt.tight_layout()
     plt.show()
 
-  def make_gif(self):
+  def make_gif(self, num_frames=500):
     # Interpolate solution to get smooth animation
-    num_frames = 500
     t = np.linspace(self.solution.t[0], self.solution.t[-1], num_frames)
     sol = self.solution.sol(t)
     
@@ -58,8 +57,8 @@ class ThreeBodyPlotter:
     line3, = ax.plot([], [], 'g-', alpha=0.3, linewidth=1, label='Body 3')
     
     point1, = ax.plot([], [], 'ro', markersize=10)
-    point2, = ax.plot([], [], 'bo', markersize=8)
-    point3, = ax.plot([], [], 'go', markersize=6)
+    point2, = ax.plot([], [], 'bo', markersize=10)
+    point3, = ax.plot([], [], 'go', markersize=10)
     
     # Traces for trajectories
     trace_length = min(100, num_frames)

@@ -1,6 +1,8 @@
-from .Params import *
+from .Utils import *
 
 from scipy.integrate import solve_ivp
+
+G = 6.67430e-11
 
 class ThreeBodySimulator:
 
@@ -29,18 +31,18 @@ class ThreeBodySimulator:
     r23 = np.sqrt((x_2 - x_3)**2 + (y_2 - y_3)**2)
     
     # Second derivatives (from three-body problem equations)
-    d2x1_dt2 = -self.params['g']*self.params['2'].m * (x_1 - x_2)/r12**3 - \
-                self.params['g']*self.params['3'].m * (x_1 - x_3)/r13**3
-    d2y1_dt2 = -self.params['g']*self.params['2'].m * (y_1 - y_2)/r12**3 - \
-                self.params['g']*self.params['3'].m * (y_1 - y_3)/r13**3
-    d2x2_dt2 = -self.params['g']*self.params['3'].m * (x_2 - x_3)/r23**3 - \
-                self.params['g']*self.params['1'].m * (x_2 - x_1)/r12**3
-    d2y2_dt2 = -self.params['g']*self.params['3'].m * (y_2 - y_3)/r23**3 - \
-                self.params['g']*self.params['1'].m * (y_2 - y_1)/r12**3
-    d2x3_dt2 = -self.params['g']*self.params['1'].m * (x_3 - x_1)/r13**3 - \
-                self.params['g']*self.params['2'].m * (x_3 - x_2)/r23**3
-    d2y3_dt2 = -self.params['g']*self.params['1'].m * (y_3 - y_1)/r13**3 - \
-                self.params['g']*self.params['2'].m * (y_3 - y_2)/r23**3
+    d2x1_dt2 = -self.params['G'] * self.params['2'].m * (x_1 - x_2)/r12**3 - \
+                self.params['G'] * self.params['3'].m * (x_1 - x_3)/r13**3
+    d2y1_dt2 = -self.params['G'] * self.params['2'].m * (y_1 - y_2)/r12**3 - \
+                self.params['G'] * self.params['3'].m * (y_1 - y_3)/r13**3
+    d2x2_dt2 = -self.params['G'] * self.params['3'].m * (x_2 - x_3)/r23**3 - \
+                self.params['G'] * self.params['1'].m * (x_2 - x_1)/r12**3
+    d2y2_dt2 = -self.params['G'] * self.params['3'].m * (y_2 - y_3)/r23**3 - \
+                self.params['G'] * self.params['1'].m * (y_2 - y_1)/r12**3
+    d2x3_dt2 = -self.params['G'] * self.params['1'].m * (x_3 - x_1)/r13**3 - \
+                self.params['G'] * self.params['2'].m * (x_3 - x_2)/r23**3
+    d2y3_dt2 = -self.params['G'] * self.params['1'].m * (y_3 - y_1)/r13**3 - \
+                self.params['G'] * self.params['2'].m * (y_3 - y_2)/r23**3
 
     # Return derivatives in order: 
     # dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt, 
@@ -70,7 +72,7 @@ class ThreeBodySimulator:
     ]
     
     # Time span for integration
-    t_span = (0, 4 * 365 * 24 * 3600) # 4 year
+    t_span = (0, self.params['days'] * 24 * 3600)
     
     # Solve the system of differential equations
     print("solving...")
