@@ -83,9 +83,9 @@ class ThreeBodyPlotter:
     if not self.quiet:
       plt.show()
 
-  def make_animation(self, num_frames=500):
+  def make_animation(self):
     # Interpolate solution to get smooth animation
-    t = np.linspace(self.solution.t[0], self.solution.t[-1], num_frames)
+    t = np.linspace(self.solution.t[0], self.solution.t[-1], self.params['frames'])
     sol = self.solution.sol(t)
     
     # Prepare the figure and axis
@@ -110,7 +110,7 @@ class ThreeBodyPlotter:
     point3, = ax.plot([], [], 'go', markersize=10)
     
     # Traces for trajectories
-    trace_length = min(100, num_frames)
+    trace_length = min(100, self.params['frames'])
     traces = [[], [], []]
     
     def init():
@@ -175,7 +175,7 @@ class ThreeBodyPlotter:
       fig, 
       animate, 
       init_func=init,
-      frames=num_frames, 
+      frames=self.params['frames'], 
       interval=20,  # 20 ms between frames
       blit=True
     )
