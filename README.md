@@ -8,7 +8,8 @@ Program performs many actions during runtime:
 
 ## Setup
 **Note: Python >=3.9 is required**
-Depenency setup is rather standard if user is familiar with Python `venv` package.
+
+Dependency setup is rather standard if user is familiar with Python `venv` package.
 1) Create and activate a virtual environment using builtin `venv` package
 ```
 # this command creates a directory called ".venv" in current directory, which includes all necessary files
