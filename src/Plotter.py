@@ -83,7 +83,7 @@ class ThreeBodyPlotter:
     if not self.quiet:
       plt.show()
 
-  def make_gif(self, num_frames=500):
+  def make_animation(self, num_frames=500):
     # Interpolate solution to get smooth animation
     t = np.linspace(self.solution.t[0], self.solution.t[-1], num_frames)
     sol = self.solution.sol(t)

@@ -17,7 +17,7 @@ def main():
   plotter = ThreeBodyPlotter(solution, params)
   plotter.plot_detailed()
   plotter.plot_phase()
-  plotter.make_gif(params['frames'])
+  plotter.make_animation(params['frames'])
 
 if __name__ == "__main__":
   main()
