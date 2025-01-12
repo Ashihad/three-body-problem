@@ -32,7 +32,7 @@ class ThreeBodyArgParser:
     self.parser.add_argument("configuration", type=self.validator, help="Specified configuration of bodies' positions, velocities and masses")
     self.parser.add_argument("--detailed-file", required=False, type=str, default="detailed_plot.png", help="Name of detailed plot file")
     self.parser.add_argument("--phase-file", required=False, type=str, default="phase_plot.png", help="Name of phase plot file")
-    self.parser.add_argument("--animation-file", required=False, type=str, default="three_body_simulation.gif", help="Name of animation file")
+    self.parser.add_argument("--animation-file", required=False, type=str, default="three_body_animation.gif", help="Name of animation file")
     self.parser.add_argument("-q", "--quiet", action='store_true', help="If set, no interactive windows will pop up, plots will still be saved")
     try:
       args = self.parser.parse_args()
