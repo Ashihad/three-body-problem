@@ -2,12 +2,13 @@ from .Utils import *
 
 from scipy.integrate import solve_ivp
 
-G = 6.67430e-11
+import logging
 
 class ThreeBodySimulator:
 
   def __init__(self, system_params):
     self.params = system_params
+    self.logger = logging.getLogger("main")
 
   def system_of_equations(self, t, state):
     """
@@ -53,8 +54,8 @@ class ThreeBodySimulator:
     ])
   
   def solve_system_of_equations(self):
-      # Initial conditions:
-      # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
+    # Initial conditions:
+    # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
     initial_conditions = [
       self.params['1'].x_0,
       self.params['1'].y_0,
@@ -75,7 +76,7 @@ class ThreeBodySimulator:
     t_span = (0, self.params['days'] * 24 * 3600)
     
     # Solve the system of differential equations
-    print("solving...")
+    self.logger.info("solving...")
     solution = solve_ivp(
         self.system_of_equations, 
         t_span, 
@@ -84,6 +85,6 @@ class ThreeBodySimulator:
         rtol=1e-8,  # Relative tolerance
         atol=1e-8   # Absolute tolerance
     )
-    print("solving done")
-    
+    self.logger.info("solving done")
+
     return solution
