@@ -76,7 +76,7 @@ class ThreeBodySimulator:
     t_span = (0, self.params['days'] * 24 * 3600)
     
     # Solve the system of differential equations
-    self.logger.info("solving...")
+    self.logger.info("Solving problem...")
     solution = solve_ivp(
         self.system_of_equations, 
         t_span, 
@@ -85,6 +85,6 @@ class ThreeBodySimulator:
         rtol=1e-8,  # Relative tolerance
         atol=1e-8   # Absolute tolerance
     )
-    self.logger.info("solving done")
+    self.logger.info("Solving done")
 
     return solution
