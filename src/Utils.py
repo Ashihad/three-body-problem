@@ -9,5 +9,3 @@ class ObjectParams2D:
   vx_0: np.float64
   vy_0: np.float64
   m: np.float64
-
-# logstr = 
