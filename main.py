@@ -19,5 +19,8 @@ def main():
   plotter.plot_phase()
   plotter.make_animation()
 
+  # exponents = sim.lyapunov_1st_x0()
+  # plotter.plot_lyapunov(exponents)
+
 if __name__ == "__main__":
   main()

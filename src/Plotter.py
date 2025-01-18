@@ -194,3 +194,21 @@ class ThreeBodyPlotter:
     
     if not self.quiet:
       plt.show()
+  
+  def plot_lyapunov(self, exponents):
+    fig, ax = plt.subplots()
+    fig.set_size_inches((10, 10))
+
+    # Position components
+    ax.plot(np.linspace(self.params['1'].x_0, self.params['1'].x_0+0.5, 20), exponents, color='blue')
+    if self.params['title']:
+      ax.set_title(self.params['title'])
+    ax.set_xlabel('1st body $x_0$')
+    ax.set_ylabel('Lyapunov exponent')
+    ax.grid(True)
+    
+    ax.set_aspect('equal', 'box')
+    fig.tight_layout()
+    plt.savefig("lyapunov.png")
+    if not self.quiet:
+      plt.show()

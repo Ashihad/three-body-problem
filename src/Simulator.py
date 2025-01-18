@@ -1,8 +1,10 @@
 from .Utils import *
 
 from scipy.integrate import solve_ivp
+from tqdm import tqdm
 
 import logging
+import copy
 
 class ThreeBodySimulator:
 
@@ -53,7 +55,7 @@ class ThreeBodySimulator:
         d2x1_dt2, d2y1_dt2, d2x2_dt2, d2y2_dt2, d2x3_dt2, d2y3_dt2  # Second derivatives
     ])
   
-  def solve_system_of_equations(self):
+  def solve_system_of_equations(self, no_log=False):
     # Initial conditions:
     # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
     initial_conditions = [
@@ -76,7 +78,8 @@ class ThreeBodySimulator:
     t_span = (0, self.params['days'] * 24 * 3600)
     
     # Solve the system of differential equations
-    self.logger.info("Solving problem...")
+    if not no_log:
+      self.logger.info("Solving problem...")
     solution = solve_ivp(
         self.system_of_equations, 
         t_span, 
@@ -85,6 +88,27 @@ class ThreeBodySimulator:
         rtol=1e-8,  # Relative tolerance
         atol=1e-8   # Absolute tolerance
     )
-    self.logger.info("Solving done")
+    if not no_log:
+      self.logger.info("Solving done")
 
     return solution
+
+  def lyapunov_1st_x0(self):
+    density = self.params['frames']
+    params_bak = copy.deepcopy(self.params)
+    local_params = copy.deepcopy(self.params)
+    parameter_range = np.linspace(local_params['1'].x_0+0.25, local_params['1'].x_0+0.3, 50) \
+      if local_params['G'] == 1 else \
+      np.linspace(local_params['1'].x_0, local_params['1'].x_0+0.5, 20)
+    exponents = []
+    for i, new_x_0 in tqdm(enumerate(parameter_range), total=parameter_range.size):
+      print(f"new_x_0={new_x_0}")
+      local_params['1'].x_0 = new_x_0
+      self.params = copy.deepcopy(local_params)
+      solution = self.solve_system_of_equations(no_log=True)
+      x_0_s = solution.y[0]
+      exponents.append(np.mean(np.log(np.abs(np.diff(x_0_s)))))
+
+    print(exponents)
+    self.params = params_bak
+    return np.array(exponents)
