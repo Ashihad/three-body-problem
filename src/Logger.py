@@ -1,3 +1,17 @@
+""" @package Logging 
+
+@brief Centralized logging
+
+@details This module defines a global logger used to generate messages about current state of program.
+Module is constructed in such a way that importing it sets up logging facilities.
+It is expected to be imported exactly once.
+
+Usage example:
+@code
+  import src/logging
+@endcode
+"""
+
 # run this once imported
 import logging
 
