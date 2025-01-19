@@ -29,11 +29,12 @@ def main():
   plotter.plot_positions()
   plotter.make_animation()
 
-  lyapunov_sim = LyapunovAnalyzer(params)
-  xs, exponents = lyapunov_sim.analyze_x0()
+  if params.get('lyapunov', None):
+    lyapunov_sim = LyapunovAnalyzer(params)
+    xs, exponents = lyapunov_sim.analyze_x0()
 
-  lyapunov_plotter = LyapunovPlotter(xs, exponents, params)
-  lyapunov_plotter.plot_lyapunov()
+    lyapunov_plotter = LyapunovPlotter(xs, exponents, params)
+    lyapunov_plotter.plot_lyapunov()
 
 if __name__ == "__main__":
   main()
