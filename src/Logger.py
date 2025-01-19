@@ -16,7 +16,10 @@ Usage example:
 import logging
 
 # set up global logger
+
+## datetime format
 time_format = '%H:%M:%S'
+## log format
 log_format = '[%(levelname)s] %(asctime)s.%(msecs)03d [%(funcName)s]: %(message)s'
 logging.basicConfig(format=log_format, datefmt=time_format)
 logger = logging.getLogger("main")

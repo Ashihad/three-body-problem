@@ -14,7 +14,7 @@ Parameters overview:
 - `days` - upper bound of simulation time, it might be fractional (e.g. value 1/24 specifies one hour)
 - `frames` - total animation frames, this parameter is directly passed to `matplotlib.animation.FuncAnimation` handler, ommitting it disables animation generation
 - `title` - if set, plots will have this string displayed above them
-- `phase_detailed_x` - creating such dictionary implies zoomed phase plot generation for x/v_x parameters of specified body
+- `phase_detailed_x` - creating such dictionary implies zoomed phase plot generation for x/vx parameters of specified body
   - `body_no` chooses a body for zoomed plot, numbers `1`, `2` and `3` are only valid imputs
   - `xrange` is a tuple of `(xrange_min, xragne_max)` for zoom plot
   - `yrange` is a tuple of `(yrange_min, yragne_max)` for zoom plot
@@ -235,7 +235,7 @@ def l1():
 
 def butterfly():
   """\"Butterfly\" configuration, from Suvakov et all
-  @see https://d1wqtxts1xzle7.cloudfront.net/35314308/PhysRevLett.110.114301-libre.pdf?1414532854=&response-content-disposition=inline%3B+filename%3DThree_Classes_of_Newtonian_Three_Body_Pl.pdf&Expires=1736637888&Signature=BgW9VEbj3h~LWtuJrAIY668dqaAEfmOBdN3HEMwa8lNN3O1OuoMMT0ckTebycVysRI6CZFML-8w~m8ilCH56MoKzU16rtac3EwFLKhc4u2Q2slc2CQ91-cxzlivugyPZwFlQ7teF6yI~xTnpah1QVQw7xaaYviMtNT0VISrmvkiN6rnub1rkw~KcWzM2undzMwdZ7EV7DmbzNOqzDI2Q68wGJVE2Cofj9R7g1-6-oRKfIZf~-QE3fRN9xwjz1jI~2VN7AoyQCWxSdmP8g6Ww8qWNTpCnOMWX7mYYroNeIGaplsNms5KndLI8LEpk1czsNo3jrLTRRummynCESgbSSA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+  @see https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.110.114301
   @returns Dictionary with simulation parameters
   """
   params = {}
@@ -252,7 +252,7 @@ def butterfly():
 
 def bumblebee():
   """\"Bumblebee\" configuration, from Suvakov et all
-  @see https://d1wqtxts1xzle7.cloudfront.net/35314308/PhysRevLett.110.114301-libre.pdf?1414532854=&response-content-disposition=inline%3B+filename%3DThree_Classes_of_Newtonian_Three_Body_Pl.pdf&Expires=1736637888&Signature=BgW9VEbj3h~LWtuJrAIY668dqaAEfmOBdN3HEMwa8lNN3O1OuoMMT0ckTebycVysRI6CZFML-8w~m8ilCH56MoKzU16rtac3EwFLKhc4u2Q2slc2CQ91-cxzlivugyPZwFlQ7teF6yI~xTnpah1QVQw7xaaYviMtNT0VISrmvkiN6rnub1rkw~KcWzM2undzMwdZ7EV7DmbzNOqzDI2Q68wGJVE2Cofj9R7g1-6-oRKfIZf~-QE3fRN9xwjz1jI~2VN7AoyQCWxSdmP8g6Ww8qWNTpCnOMWX7mYYroNeIGaplsNms5KndLI8LEpk1czsNo3jrLTRRummynCESgbSSA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+  @see https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.110.114301
   @returns Dictionary with simulation parameters
   """
   params = {}
@@ -269,7 +269,7 @@ def bumblebee():
 
 def goggles():
   """\"Goggles\" configuration, from Suvakov et all
-  @see https://d1wqtxts1xzle7.cloudfront.net/35314308/PhysRevLett.110.114301-libre.pdf?1414532854=&response-content-disposition=inline%3B+filename%3DThree_Classes_of_Newtonian_Three_Body_Pl.pdf&Expires=1736637888&Signature=BgW9VEbj3h~LWtuJrAIY668dqaAEfmOBdN3HEMwa8lNN3O1OuoMMT0ckTebycVysRI6CZFML-8w~m8ilCH56MoKzU16rtac3EwFLKhc4u2Q2slc2CQ91-cxzlivugyPZwFlQ7teF6yI~xTnpah1QVQw7xaaYviMtNT0VISrmvkiN6rnub1rkw~KcWzM2undzMwdZ7EV7DmbzNOqzDI2Q68wGJVE2Cofj9R7g1-6-oRKfIZf~-QE3fRN9xwjz1jI~2VN7AoyQCWxSdmP8g6Ww8qWNTpCnOMWX7mYYroNeIGaplsNms5KndLI8LEpk1czsNo3jrLTRRummynCESgbSSA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+  @see https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.110.114301
   @returns Dictionary with simulation parameters
   """
   params = {}
@@ -286,7 +286,7 @@ def goggles():
 
 def yinyang():
   """\"Yin-Yang\" configuration, from Suvakov et all
-  @see https://d1wqtxts1xzle7.cloudfront.net/35314308/PhysRevLett.110.114301-libre.pdf?1414532854=&response-content-disposition=inline%3B+filename%3DThree_Classes_of_Newtonian_Three_Body_Pl.pdf&Expires=1736637888&Signature=BgW9VEbj3h~LWtuJrAIY668dqaAEfmOBdN3HEMwa8lNN3O1OuoMMT0ckTebycVysRI6CZFML-8w~m8ilCH56MoKzU16rtac3EwFLKhc4u2Q2slc2CQ91-cxzlivugyPZwFlQ7teF6yI~xTnpah1QVQw7xaaYviMtNT0VISrmvkiN6rnub1rkw~KcWzM2undzMwdZ7EV7DmbzNOqzDI2Q68wGJVE2Cofj9R7g1-6-oRKfIZf~-QE3fRN9xwjz1jI~2VN7AoyQCWxSdmP8g6Ww8qWNTpCnOMWX7mYYroNeIGaplsNms5KndLI8LEpk1czsNo3jrLTRRummynCESgbSSA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+  @see https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.110.114301
   @returns Dictionary with simulation parameters
   """
   params = {}

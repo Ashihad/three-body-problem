@@ -2,11 +2,16 @@
 
 @brief Differential equation solvers
 
-@details 
+@details These functions return `OdeSolution` object containing vectors of solutions to all variables in a three body problem
 
 Example usage:
 @code
-
+  chosen_mode, plot_params = ThreeBodyArgParser().handle_args()
+  params = chosen_mode()
+  params = params | plot_params
+  
+  sim = ThreeBodySimulator(params)
+  solution = sim.solve_system_of_equations()
 @endcode
 
 """
@@ -70,7 +75,7 @@ class ThreeBodySimulator:
   
   def solve_system_of_equations(self):
     """Solve system of PDEs reflecting a three body problem
-    @returns OdeSolution object containing solutions for all parameters
+    @returns `OdeSolution` object containing solutions for all parameters
     """
     # Initial conditions:
     # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
@@ -108,7 +113,7 @@ class ThreeBodySimulator:
     return solution
 
 class LyapunovAnalyzer(ThreeBodySimulator):
-  """Class that generates an array of Lyapunov exponents for a given range of x_0 parameters for a specified body"""
+  """Class that generates an array of Lyapunov exponents for a given range of x0 parameters for a specified body"""
   def solve_system_of_equations(self):
     """Modified solver, with looser tolerances, disabled dense output, disabled logging and using Lyapunov days range.
     It is meant to run faster and quieter, making it suitable for calling in a loop.
@@ -148,7 +153,7 @@ class LyapunovAnalyzer(ThreeBodySimulator):
     return solution
 
   def analyze_x0(self):
-    """Calculate Lyapunov exponents from x_0s of a given body
+    """Calculate Lyapunov exponents from x0s of a given body
     @returns A tuple containing:
     - used x_0 range for a given body
     - `np.array` of exponents
