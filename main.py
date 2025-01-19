@@ -4,6 +4,8 @@ from src.Simulator import *
 from src.Configurations import *
 from src.ArgsHandler import *
 
+
+# importing src/Logger.py initializes logging
 import src.Logger
 
 def main():
@@ -17,10 +19,15 @@ def main():
   plotter = ThreeBodyPlotter(solution, params)
   plotter.plot_detailed()
   plotter.plot_phase()
+  plotter.plot_phase_detailed_x()
+  plotter.plot_positions()
   plotter.make_animation()
 
-  # exponents = sim.lyapunov_1st_x0()
-  # plotter.plot_lyapunov(exponents)
+  lyapunov_sim = LyapunovAnalyzer(params)
+  xs, exponents = lyapunov_sim.analyze_x0()
+
+  lyapunov_plotter = LyapunovPlotter(xs, exponents, params)
+  lyapunov_plotter.plot_lyapunov()
 
 if __name__ == "__main__":
   main()
