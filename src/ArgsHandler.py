@@ -40,7 +40,8 @@ class ThreeBodyArgParser:
 
   def print_available_modes(self):
     """Generates a string containing all avaliable configurations"""
-    return f"Available configurations: \n - {'\n - '.join(self.mode_names)}"
+    mode_list = '\n - '.join(self.mode_names)
+    return f"Available configurations: \n - {mode_list}"
 
   def validator(self, string: str):
     """Checks if string is a valid mode name
