@@ -33,6 +33,7 @@ import numpy as np
 
 @dataclass
 class ObjectParams2D:
+  """Class that holds information about a body"""
   x_0: np.float64
   y_0: np.float64
   vx_0: np.float64

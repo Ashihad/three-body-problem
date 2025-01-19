@@ -1,3 +1,8 @@
+""" @package main
+
+@brief Program's entry point
+"""
+
 from src.Utils import *
 from src.Plotter import *
 from src.Simulator import *
@@ -9,6 +14,7 @@ from src.ArgsHandler import *
 import src.Logger
 
 def main():
+  """Run chosen simulation"""
   chosen_mode, plot_params = ThreeBodyArgParser().handle_args()
   params = chosen_mode()
   params = params | plot_params

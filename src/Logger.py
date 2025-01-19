@@ -1,4 +1,4 @@
-""" @package Logging 
+""" @package Logger 
 
 @brief Centralized logging
 
@@ -8,13 +8,14 @@ It is expected to be imported exactly once.
 
 Usage example:
 @code
-  import src/logging
+  import src/Logger
 @endcode
 """
 
 # run this once imported
 import logging
 
+# set up global logger
 time_format = '%H:%M:%S'
 log_format = '[%(levelname)s] %(asctime)s.%(msecs)03d [%(funcName)s]: %(message)s'
 logging.basicConfig(format=log_format, datefmt=time_format)

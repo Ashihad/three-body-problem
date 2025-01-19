@@ -22,23 +22,20 @@ import sys
 import copy
 
 class ThreeBodySimulator:
-
+  """Class that generates solution of a three body problem given simulation parameters"""
   def __init__(self, system_params):
+    ## Simulator parameters
     self.params = system_params
     ## Global logger reference
     self.logger = logging.getLogger("main")
 
   def system_of_equations(self, t, state):
-    """
-    Define a system of 6 coupled 2nd order differential equations.
-    
-    Parameters:
-    t (float): Time
-    Y (array): State vector 
+    """Defines a system of 6 coupled 2nd order differential equations.
+    @param t (float): Time
+    @param Y (array): State vector 
     [x1, x2, x3, x4, x5, x6, 
       dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]
-    
-    Returns:
+    @returns:
     array: Derivatives for each variable
     """
     # Unpack the state vector
@@ -72,6 +69,9 @@ class ThreeBodySimulator:
     ])
   
   def solve_system_of_equations(self):
+    """Solve system of PDEs reflecting a three body problem
+    @returns OdeSolution object containing solutions for all parameters
+    """
     # Initial conditions:
     # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
     initial_conditions = [
@@ -108,10 +108,12 @@ class ThreeBodySimulator:
     return solution
 
 class LyapunovAnalyzer(ThreeBodySimulator):
-
-  def solve_system_of_equations(self, days):
-    # Modified to disable logging and dense output
-
+  """Class that generates an array of Lyapunov exponents for a given range of x_0 parameters for a specified body"""
+  def solve_system_of_equations(self):
+    """Modified solver, with looser tolerances, disabled dense output, disabled logging and using Lyapunov days range.
+    It is meant to run faster and quieter, making it suitable for calling in a loop.
+    @returns OdeSolution object containing solutions for all parameters
+    """
     # Initial conditions:
     # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
     initial_conditions = [
@@ -131,7 +133,7 @@ class LyapunovAnalyzer(ThreeBodySimulator):
     ]
     
     # Time span for integration
-    t_span = (0, days * 24 * 3600)
+    t_span = (0, self.params['lyapunov']['days'] * 24 * 3600)
     
     # Solve the system of differential equations
     solution = solve_ivp(
@@ -145,25 +147,34 @@ class LyapunovAnalyzer(ThreeBodySimulator):
 
     return solution
 
-  def analyze_x0(self, days=1):
+  def analyze_x0(self):
+    """Calculate Lyapunov exponents from x_0s of a given body
+    @returns A tuple containing:
+    - used x_0 range for a given body
+    - `np.array` of exponents
+    """
     # check if Lyapunov exponent params are set, if not exit
     if not self.params.get('lyapunov', None):
       return
+    body_no =  self.params['lyapunov']['body_no']
     
     params_bak = copy.deepcopy(self.params)
     local_params = copy.deepcopy(self.params)
 
     parameter_range = self.params['lyapunov']['range']
-    exponents = []
+
     self.logger.warning(f"Calculating Lyapunov exponents for range ({parameter_range[0]:.2f}, {parameter_range[-1]:.2f}, {len(parameter_range)}), it will take some time")
-    for i, new_x_0 in tqdm(enumerate(parameter_range), total=parameter_range.size, file=sys.stdout):
-      self.logger.info(f"new_x_0={new_x_0}")
-      local_params['2'].x_0 = new_x_0
+    exponents = []
+    for new_x_0 in tqdm(parameter_range, total=parameter_range.size, file=sys.stdout):
+      self.logger.debug(f"new_x_0={new_x_0}")
+
+      local_params[str(body_no)].x_0 = new_x_0
       self.params = copy.deepcopy(local_params)
-      solution = self.solve_system_of_equations(days)
+
+      solution = self.solve_system_of_equations()
+      x_0_s = solution.y[2*(body_no-1)]
 
       # calculate lyapunov exponent from x_0s of appropriate body
-      x_0_s = solution.y[2*(self.params['lyapunov']['body_no']-1)]
       exponents.append(np.mean(np.log(np.abs(np.diff(x_0_s)))))
 
     self.params = params_bak
