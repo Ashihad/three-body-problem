@@ -1,3 +1,33 @@
+""" @module Plotter
+
+@brief Plotting facilities
+
+@details This module defines classes which visualize solutions for a given three body problem.
+Module two plotters, one for visualizing general solutions and one designed to plot Lyapunov exponents.
+Their usage is specified in each classes' documentation.
+
+Classes overview:
+- `ThreeBodyPlotter` - general plotter, capable of visualizing bodies' tragectories, phase diagrams and animating solution
+- `LyapunovPlotter` - plotter specialized for plotting Lyapunov exponents
+
+Usage example:
+@code
+  # assuming correctly concatenated `params` dictionary
+  simulator = ThreeBodySimulator(params)
+  solution = simulator.solve_system_of_equations()
+
+  plotter = ThreeBodyPlotter(solution, params)
+  plotter.plot_positions()
+
+  # ...
+  lyapunov_sim = LyapunovAnalyzer(params)
+  xs, exponents = lyapunov_sim.analyze_x0() TODO hardcoded?
+  
+  plotter = LyapunovPlotter(xs, exponents, params)
+  plotter.plot_lyapunov()
+@endcode
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -8,13 +38,15 @@ class ThreeBodyPlotter:
   def __init__(self, solution, params):
     self.solution = solution
     self.params = params
+    ## Global logger reference
     self.logger = logging.getLogger('main')
     self.detailed_path = params['detailed_file']
+    self.trajectories_path = params['trajectories_file']
     self.phase_path = params['phase_file']
     self.animation_path = params['animation_file']
     self.quiet = params['quiet']
 
-  def plot_detailed(self, resolution=500):
+  def plot_detailed(self):
     """
     Plot the solutions for all 6 variables.
     """
@@ -58,7 +90,7 @@ class ThreeBodyPlotter:
     if not self.quiet:
       plt.show()
 
-  def plot_phase(self):
+  def plot_positions(self):
     fig, ax = plt.subplots()
     fig.set_size_inches((10, 10))
     
@@ -79,11 +111,85 @@ class ThreeBodyPlotter:
     
     ax.set_aspect('equal', 'box')
     fig.tight_layout()
-    plt.savefig(self.phase_path)
+    plt.savefig(self.trajectories_path)
+    if not self.quiet:
+      plt.show()
+
+  def plot_phase(self):
+    fig, axes = plt.subplots(3, 2)
+    fig.set_size_inches((20, 15))
+    
+    x1, y1 = self.solution.y[0], self.solution.y[1]
+    x2, y2 = self.solution.y[2], self.solution.y[3]
+    x3, y3 = self.solution.y[4], self.solution.y[5]
+    vx1, vy1 = self.solution.y[6], self.solution.y[7]
+    vx2, vy2 = self.solution.y[8], self.solution.y[9]
+    vx3, vy3 = self.solution.y[10], self.solution.y[11]
+
+    # setup basic properties for x plots
+    for i, j, body_no in zip((0,1,2), (0,0,0), (1,2,3)):
+      axes[i][j].set_xlabel("$x$ [m]")
+      axes[i][j].set_ylabel("$v_x$ [m/s]")
+      axes[i][j].grid(True)
+      axes[i][j].set_title(f"Body {body_no}")
+    axes[0][0].plot(x1, vx1, label='Body 1', color='red')
+    axes[1][0].plot(x2, vx2, label='Body 2', color='green')
+    axes[2][0].plot(x3, vx3, label='Body 3', color='blue')
+
+    # setup basic properties for y plots
+    for i, j, body_no in zip((0,1,2), (1,1,1), (1,2,3)):
+      axes[i][j].set_xlabel("$y$ [m]")
+      axes[i][j].set_ylabel("$v_y$ [m/s]")
+      axes[i][j].grid(True)
+      axes[i][j].set_title(f"Body {body_no}")
+    axes[0][1].plot(y1, vy1, label='Body 1', color='red')
+    axes[1][1].plot(y2, vy2, label='Body 2', color='green')
+    axes[2][1].plot(y3, vy3, label='Body 3', color='blue')
+
+    if self.params['title']:
+      fig.suptitle(self.params['title'] + ', $x$ parameters phase plots')
+    fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    plt.savefig(self.trajectories_path)
+    if not self.quiet:
+      plt.show()
+
+  def plot_phase_detailed_x(self):
+    # check if detailed phase plot params are set, otherwise exit
+    if not self.params.get('phase_detailed_x', None):
+      return
+    fig, ax = plt.subplots()
+    fig.set_size_inches((15, 10))
+    
+    body_no = self.params['phase_detailed_x']['body_no']
+    x = self.solution.y[2*(body_no-1)]
+    vx = self.solution.y[6 + 2*(body_no-1)]
+
+    # setup basic properties for x plots
+    ax.set_xlabel("$x$ [m]")
+    ax.set_ylabel("$v_x$ [m/s]")
+    ax.set_xlim(self.params['phase_detailed_x']['xrange'])
+    ax.set_ylim(self.params['phase_detailed_x']['yrange'])
+    ax.grid(True)
+    ax.plot(x, vx, '-r|', label=f'Body {body_no}', markersize=4)
+
+    if self.params['title']:
+      fig.suptitle(self.params['title'] + f', body {body_no}\'s $x$ parameters detailed phase plot')
+    fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    plt.savefig('detailed_x_' + self.trajectories_path)
     if not self.quiet:
       plt.show()
 
   def make_animation(self):
+    """
+    Method that generates animation out of precalculated solution.
+    Plot is saved to file specified in `argv` or to default one.
+    Plot is shown is `--quiet` was not passed.
+    """
+    # check if `frames` param is set, otherwise exit
+    if not self.params.get('frames', None):
+      return
     # Interpolate solution to get smooth animation
     t = np.linspace(self.solution.t[0], self.solution.t[-1], self.params['frames'])
     sol = self.solution.sol(t)
@@ -195,20 +301,40 @@ class ThreeBodyPlotter:
     if not self.quiet:
       plt.show()
   
-  def plot_lyapunov(self, exponents):
+class LyapunovPlotter:
+  """
+  Class that implements plotting of Lyapunov exponents with respect to arbitrary parameter
+  """
+  def __init__(self, xs, ys, params, quiet=False):
+    self.params = params
+    ## Global logger reference
+    self.logger = logging.getLogger('main')
+    self.lyapunov_path = params['lyapunov_file']
+    self.xs = xs
+    self.ys = ys
+    self.quiet = quiet
+
+  def plot_lyapunov(self):
+    # check if Lyapunov exponent params are set, otherwise exit
+    if not self.params.get('lyapunov', None):
+      return
+    
     fig, ax = plt.subplots()
     fig.set_size_inches((10, 10))
 
+    plot_color =  'red' if self.params['lyapunov']['body_no'] == 1 \
+           else 'green' if self.params['lyapunov']['body_no'] == 2 \
+           else 'blue'
+
     # Position components
-    ax.plot(np.linspace(self.params['1'].x_0, self.params['1'].x_0+0.5, 20), exponents, color='blue')
+    ax.plot(self.xs, self.ys, color=plot_color, marker='o', linestyle='dashed')
     if self.params['title']:
-      ax.set_title(self.params['title'])
-    ax.set_xlabel('1st body $x_0$')
+      ax.set_title(self.params['title'] + ', Lyapunov exponent')
+    ax.set_xlabel(self.params['lyapunov']['param'] + ' of body ' + str(self.params['lyapunov']['body_no']))
     ax.set_ylabel('Lyapunov exponent')
     ax.grid(True)
     
-    ax.set_aspect('equal', 'box')
     fig.tight_layout()
-    plt.savefig("lyapunov.png")
+    plt.savefig(self.lyapunov_path)
     if not self.quiet:
       plt.show()
