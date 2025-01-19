@@ -1,0 +1,31 @@
+# Doxyfile
+PROJECT_NAME           = "Three Body Problem Simulator"
+PROJECT_BRIEF         = "A solver for various three body problems"
+OUTPUT_DIRECTORY      = docs
+EXTRACT_ALL           = YES
+EXTRACT_PRIVATE       = YES
+EXTRACT_STATIC        = YES
+INPUT                 = .
+FILE_PATTERNS         = *.py
+RECURSIVE             = YES
+GENERATE_HTML         = YES
+GENERATE_LATEX        = YES
+LATEX_OUTPUT         = latex
+LATEX_CMD_NAME       = pdflatex
+USE_PDFLATEX         = YES
+PDF_HYPERLINKS       = YES
+LATEX_BATCHMODE      = YES
+LATEX_HIDE_INDICES   = NO
+LATEX_SOURCE_CODE    = YES
+HAVE_DOT             = NO
+QUIET                = NO
+WARNINGS             = YES
+WARN_IF_UNDOCUMENTED = YES
+
+# PDF specific settings
+PAPER_TYPE           = a4
+PDF_HYPERLINKS       = YES
+LATEX_EXTRA_STYLESHEET =
+LATEX_EXTRA_FILES    =
+COMPACT_LATEX        = NO
+LATEX_TIMESTAMP      = NO
