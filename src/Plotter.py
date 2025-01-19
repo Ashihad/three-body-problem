@@ -331,7 +331,7 @@ class ThreeBodyPlotter:
   
 class LyapunovPlotter:
   """Class that implements plotting of Lyapunov exponents with respect to x_0 of an arbitrary body"""
-  def __init__(self, xs, ys, params, quiet=False):
+  def __init__(self, xs, ys, params):
     ## Simulator parameters
     self.params = params
     ## Global logger reference
@@ -343,7 +343,7 @@ class LyapunovPlotter:
     ## Lyapunov exponent array
     self.ys = ys
     ## If set to true script will not show an interactive window
-    self.quiet = quiet
+    self.quiet = params['quiet']
 
   def plot_lyapunov(self):
     """Plot Lyapunov exponents with respect to given x_0 range for arbitrary body.
@@ -364,7 +364,7 @@ class LyapunovPlotter:
     # Position components
     ax.plot(self.xs, self.ys, color=plot_color, marker='o', linestyle='dashed')
     if self.params['title']:
-      ax.set_title(self.params['title'] + f', Lyapunov exponent for parameter $x_0$ of body {self.params['lyapunov']['body_no']}')
+      ax.set_title(self.params['title'] + f", Lyapunov exponent for parameter $x_0$ of body {self.params['lyapunov']['body_no']}")
     ax.set_xlabel(self.params['lyapunov']['param'] + ' of body ' + str(self.params['lyapunov']['body_no']))
     ax.set_ylabel('Lyapunov exponent')
     ax.grid(True)

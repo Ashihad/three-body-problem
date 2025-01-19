@@ -60,7 +60,7 @@ def newton_problem():
   params['1'] = ObjectParams2D(0, 0, 0, 0, 1.989e30)                            # sun
   params['2'] = ObjectParams2D(0, 1.5e11, 29.78e3, 0, 5.97e24)                  # earth
   params['3'] = ObjectParams2D(0, 1.5e11+384_400_000, 29.78e3+1022, 0, 7.35e22) # moon
-  params['days'] = 31
+  params['days'] = 365
   params['frames'] = 500
   params['title'] = "Newton problem (Sun-Earth-Moon system)"
   return params
@@ -101,7 +101,7 @@ def burrau():
   params['lyapunov'] = {}
   params['lyapunov']['body_no'] = 2
   params['lyapunov']['param'] = '$x_0$'
-  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 10)
+  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 20)
   params['lyapunov']['days'] = 20
 
   return params
@@ -128,7 +128,7 @@ def burrau_shifted():
   params['lyapunov'] = {}
   params['lyapunov']['body_no'] = 2
   params['lyapunov']['param'] = '$x_0$'
-  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 10)
+  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 20)
   params['lyapunov']['days'] = 20
 
   return params
@@ -155,7 +155,7 @@ def burrau_less_shifted():
   params['lyapunov'] = {}
   params['lyapunov']['body_no'] = 2
   params['lyapunov']['param'] = '$x_0$'
-  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 10)
+  params['lyapunov']['range'] = np.linspace(params['2'].x_0, params['2'].x_0 + 2.999, 20)
   params['lyapunov']['days'] = 20
 
   return params
