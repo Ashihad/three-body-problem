@@ -79,21 +79,6 @@ def triangle():
   params['title'] = "Equilateral triangle configuration"
   return params
 
-def rotating_triangle():
-  # does not work
-  params = {}
-  # params['1'] = ObjectParams2D(-np.sqrt(3)/2*1.5e11, -1/2*1.5e11, -500, 500*np.sqrt(3), 1.989e32)
-  # params['2'] = ObjectParams2D( np.sqrt(3)/2*1.5e11, -1/2*1.5e11, -500*np.sqrt(3), -500, 1.989e32)
-  # params['3'] = ObjectParams2D(0, 1*1.5e11, 1000, 0, 1.989e32)
-  params['G'] = 6.67430e-11
-  v1 = np.sqrt(6.67430e-11 * 3*1.989e32 / 1*1.5e11)/1000
-  params['1'] = ObjectParams2D(-np.sqrt(3)/2*1.5e11, -1/2*1.5e11, -1/2*v1, v1*np.sqrt(3), 1.989e32)
-  params['2'] = ObjectParams2D( np.sqrt(3)/2*1.5e11, -1/2*1.5e11, -v1*np.sqrt(3), -1/2*v1, 1.989e32)
-  params['3'] = ObjectParams2D(0, 1*1.5e11, v1, 0, 1.989e32)
-  params['days'] = 365
-  params['frames'] = 500
-  return params
-
 def burrau():
   """Burrau problem (3-4-5 triangle)
   @see https://en.wikipedia.org/wiki/Three-body_problem#Special-case_solutions
