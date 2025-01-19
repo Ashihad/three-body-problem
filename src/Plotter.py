@@ -31,12 +31,14 @@ Usage example:
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import os
 
 import logging
 
 class ThreeBodyPlotter:
   """Generate plots from solution of a three body problem"""
   def __init__(self, solution, params):
+    
     ## Precalculated solution
     self.solution = solution
     ## Simulator parameters
@@ -55,6 +57,12 @@ class ThreeBodyPlotter:
     self.animation_path = params['animation_file']
     ## If set to true script will not show an interactive window
     self.quiet = params['quiet']
+    if "DISPLAY" not in os.environ:
+      self.logger.warning("Interactive plots not supported")
+      self.interactive_supported = False
+    else:
+      self.logger.info("Interactive plots supported")
+      self.interactive_supported = True
 
   def plot_detailed(self):
     """Plot the solutions for all 6 variables with respect to time
@@ -99,7 +107,7 @@ class ThreeBodyPlotter:
     fig.tight_layout()
     plt.savefig(self.detailed_path)
     self.logger.info(f"Detailed plot saved as \"{self.detailed_path}\"")
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
 
   def plot_positions(self):
@@ -129,7 +137,7 @@ class ThreeBodyPlotter:
     fig.tight_layout()
     plt.savefig(self.trajectories_path)
     self.logger.info(f"Trajectories plot saved as \"{self.trajectories_path}\"")
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
 
   def plot_phase(self):
@@ -173,7 +181,7 @@ class ThreeBodyPlotter:
     
     plt.savefig(self.phase_path)
     self.logger.info(f"Phase plot saved as \"{self.phase_path}\"")
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
 
   def plot_phase_detailed_x(self):
@@ -205,7 +213,7 @@ class ThreeBodyPlotter:
     
     plt.savefig(self.phase_detailed_path)
     self.logger.info(f"Detailed phase plot saved as \"{self.phase_detailed_path}\"")
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
 
   def make_animation(self):
@@ -320,13 +328,13 @@ class ThreeBodyPlotter:
 
     # Save animation 
     try:
-      self.logger.info("Saving animation...")
+      self.logger.info("Saving animation (this might take a while)...")
       anim.save(self.animation_path, writer='pillow')
       self.logger.info(f"Animation saved as \"{self.animation_path}\"")
     except Exception as e:
       self.logger.critical(f"Could not save animation: {e}")
     
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
   
 class LyapunovPlotter:
@@ -344,6 +352,12 @@ class LyapunovPlotter:
     self.ys = ys
     ## If set to true script will not show an interactive window
     self.quiet = params['quiet']
+    if "DISPLAY" not in os.environ:
+      self.logger.warning("Interactive plots not supported")
+      self.interactive_supported = False
+    else:
+      self.logger.info("Interactive plots supported")
+      self.interactive_supported = True
 
   def plot_lyapunov(self):
     """Plot Lyapunov exponents with respect to given x_0 range for arbitrary body.
@@ -372,5 +386,5 @@ class LyapunovPlotter:
     fig.tight_layout()
     plt.savefig(self.lyapunov_path)
     self.logger.info(f"Lyapunov plot saved as \"{self.lyapunov_path}\"")
-    if not self.quiet:
+    if not self.quiet and self.interactive_supported:
       plt.show()
