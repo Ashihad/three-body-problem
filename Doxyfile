@@ -21,6 +21,8 @@ HAVE_DOT             = NO
 QUIET                = NO
 WARNINGS             = YES
 WARN_IF_UNDOCUMENTED = YES
+PYTHON_DOCSTRING     = NO
+OPTIMIZE_OUTPUT_JAVA = YES  # funny it works faster this way
 
 # PDF specific settings
 PAPER_TYPE           = a4
