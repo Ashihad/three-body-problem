@@ -1,15 +1,31 @@
+""" @package Simulator
+
+@brief Differential equation solvers
+
+@details 
+
+Example usage:
+@code
+
+@endcode
+
+"""
+
+
 from .Utils import *
 
 from scipy.integrate import solve_ivp
 from tqdm import tqdm
 
 import logging
+import sys
 import copy
 
 class ThreeBodySimulator:
 
   def __init__(self, system_params):
     self.params = system_params
+    ## Global logger reference
     self.logger = logging.getLogger("main")
 
   def system_of_equations(self, t, state):
@@ -55,7 +71,7 @@ class ThreeBodySimulator:
         d2x1_dt2, d2y1_dt2, d2x2_dt2, d2y2_dt2, d2x3_dt2, d2y3_dt2  # Second derivatives
     ])
   
-  def solve_system_of_equations(self, no_log=False):
+  def solve_system_of_equations(self):
     # Initial conditions:
     # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
     initial_conditions = [
@@ -78,8 +94,7 @@ class ThreeBodySimulator:
     t_span = (0, self.params['days'] * 24 * 3600)
     
     # Solve the system of differential equations
-    if not no_log:
-      self.logger.info("Solving problem...")
+    self.logger.info("Solving problem...")
     solution = solve_ivp(
         self.system_of_equations, 
         t_span, 
@@ -88,27 +103,68 @@ class ThreeBodySimulator:
         rtol=1e-8,  # Relative tolerance
         atol=1e-8   # Absolute tolerance
     )
-    if not no_log:
-      self.logger.info("Solving done")
+    self.logger.info("Solving done")
 
     return solution
 
-  def lyapunov_1st_x0(self):
-    density = self.params['frames']
+class LyapunovAnalyzer(ThreeBodySimulator):
+
+  def solve_system_of_equations(self, days):
+    # Modified to disable logging and dense output
+
+    # Initial conditions:
+    # [x1, x2, x3, x4, x5, x6, dx1/dt, dx2/dt, dx3/dt, dx4/dt, dx5/dt, dx6/dt]    
+    initial_conditions = [
+      self.params['1'].x_0,
+      self.params['1'].y_0,
+      self.params['2'].x_0,
+      self.params['2'].y_0,
+      self.params['3'].x_0,
+      self.params['3'].y_0,
+
+      self.params['1'].vx_0,
+      self.params['1'].vy_0,
+      self.params['2'].vx_0,
+      self.params['2'].vy_0,
+      self.params['3'].vx_0,
+      self.params['3'].vy_0
+    ]
+    
+    # Time span for integration
+    t_span = (0, days * 24 * 3600)
+    
+    # Solve the system of differential equations
+    solution = solve_ivp(
+        self.system_of_equations, 
+        t_span, 
+        initial_conditions,
+        dense_output=False,  # No interpoaltion
+        rtol=1e-6,  # Relative tolerance
+        atol=1e-6   # Absolute tolerance
+    )
+
+    return solution
+
+  def analyze_x0(self, days=1):
+    # check if Lyapunov exponent params are set, if not exit
+    if not self.params.get('lyapunov', None):
+      return
+    
     params_bak = copy.deepcopy(self.params)
     local_params = copy.deepcopy(self.params)
-    parameter_range = np.linspace(local_params['1'].x_0+0.25, local_params['1'].x_0+0.3, 50) \
-      if local_params['G'] == 1 else \
-      np.linspace(local_params['1'].x_0, local_params['1'].x_0+0.5, 20)
+
+    parameter_range = self.params['lyapunov']['range']
     exponents = []
-    for i, new_x_0 in tqdm(enumerate(parameter_range), total=parameter_range.size):
-      print(f"new_x_0={new_x_0}")
-      local_params['1'].x_0 = new_x_0
+    self.logger.warning(f"Calculating Lyapunov exponents for range ({parameter_range[0]:.2f}, {parameter_range[-1]:.2f}, {len(parameter_range)}), it will take some time")
+    for i, new_x_0 in tqdm(enumerate(parameter_range), total=parameter_range.size, file=sys.stdout):
+      self.logger.info(f"new_x_0={new_x_0}")
+      local_params['2'].x_0 = new_x_0
       self.params = copy.deepcopy(local_params)
-      solution = self.solve_system_of_equations(no_log=True)
-      x_0_s = solution.y[0]
+      solution = self.solve_system_of_equations(days)
+
+      # calculate lyapunov exponent from x_0s of appropriate body
+      x_0_s = solution.y[2*(self.params['lyapunov']['body_no']-1)]
       exponents.append(np.mean(np.log(np.abs(np.diff(x_0_s)))))
 
-    print(exponents)
     self.params = params_bak
-    return np.array(exponents)
+    return parameter_range, np.array(exponents)
